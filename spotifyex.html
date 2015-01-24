@@ -7,7 +7,7 @@
         <script src="http://d3js.org/d3.v2.min.js?2.10.1"></script>
     <style type="text/css">
 	.wrapper{
-
+		display: flex;
 		height: 1000px;
 		width: 1000px;
 		border: black solid thin;
@@ -16,9 +16,11 @@
 		width: 250px;
 		height: 250px;
 		z-index: -9999;
+		background-size: cover;
 		border: red solid thin;
 	}
 	#container {
+		display: flex;
 
 		width: 800px;
 		height: 800px;
@@ -67,8 +69,11 @@
 					var container = document.querySelector('#container');
 					var item = document.createElement("div")					
 					item.setAttribute("class", "item")
-					var imgUrl = '"'+ musicAct["artists"]["items"][0]["images"][0].url +'"'
-					item.setAttribute('background-image', 'url(' + imgUrl + ') no-repeat');
+					var imgUrl = musicAct["artists"]["items"][0]["images"][0].url;
+					var cssDiv = 'background-image: url("'+ imgUrl +'") ';
+					item.setAttribute('style', cssDiv);
+
+
 					container.appendChild(item)
 					console.log(item);
 
@@ -128,7 +133,9 @@
 		var msnry = new Masonry( container, {
   		// options...
   		itemSelector: '.item',
-  		columnWidth: 200
+  		columnWidth: 200,
+  		columnHeight: 200
+
 		});
 
         
