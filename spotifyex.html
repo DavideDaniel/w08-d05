@@ -3,19 +3,139 @@
     <head>
         <meta charset="UTF-8">
         <title>Spotify</title>
+        <script src="./masonry.pkgd.min.js"></script>
+        <script src="http://d3js.org/d3.v2.min.js?2.10.1"></script>
+    <style type="text/css">
+	.wrapper{
+
+		height: 1000px;
+		width: 1000px;
+		border: black solid thin;
+	}
+	.item {
+		width: 250px;
+		height: 250px;
+		z-index: -9999;
+		border: red solid thin;
+	}
+	#container {
+
+		width: 800px;
+		height: 800px;
+		border: blue solid thin;
+	}
+    </style>
     </head>
+
     <body>
         <h2></h2>
-        <input type="text">
-        <button></button>>
-        <script type="text/javascript" src="spotifyAPI.js">
+        <input type="text" placeholder="artist name">
+        <button id = "searchButton">Search</button>
+        <button id = "popButton"></button>
+		<div class = "wrapper">
+			
+			        <div class="js-masonry" id="container"></div>
+		</div>
+        <script type="text/javascript">
+		var piclist = ["Miike Snow", "Band of Horses", "Weezer", "Nirvana", "Joy Division", "deadMau5", "Kanye West", "The Notorious B.I.G.", "Jay-Z", "Nas", "Silversun Pickups"]
+        var h1 = document.querySelector("h1");
         var h2 = document.querySelector("h2");
+        var h3 = document.querySelector("h3");
+        var h4 = document.querySelector("h4");
+
         var input = document.querySelector("input");
-        var button = document.querySelector("button");
-        
-        button.addEventListener("click", function(){
+        var searchButton = document.querySelector("#searchButton");
+        var popButton = document.querySelector("#popButton");
+
+
+        popButton.addEventListener("click", function(){
+        	var img = document.querySelector("img")
+
+        	var artistName = input.value.replace(" ", "+");
+        	searchArtist(artistName, img);
         	
         })
+
+        var generatePics = function (array) {
+			array.forEach(function(artist){
+			var xhr = new XMLHttpRequest();
+			var url = "https://api.spotify.com/v1/search?q=artist:"+artist+"&type=artist"
+			xhr.open("GET", url)
+				xhr.addEventListener( 'load', function ( e ) {
+
+					var musicAct = JSON.parse(xhr.responseText)
+					var container = document.querySelector('#container');
+					var item = document.createElement("div")					
+					item.setAttribute("class", "item")
+					var imgUrl = '"'+ musicAct["artists"]["items"][0]["images"][0].url +'"'
+					item.setAttribute('background-image', 'url(' + imgUrl + ') no-repeat');
+					container.appendChild(item)
+					console.log(item);
+
+				} );
+				xhr.send();
+        	})};
+
+        var generatePopGraph = function (array){
+        	array.forEach(function(artist){
+			var xhr = new XMLHttpRequest();
+			var url = "https://api.spotify.com/v1/search?q=artist:"+artist+"&type=artist"
+			xhr.open("GET", url)
+				xhr.addEventListener( 'load', function ( e ) {
+
+					var musicAct = JSON.parse(xhr.responseText)
+					console.log(musicAct);
+					var container = document.querySelector('#container');
+					var img = document.createElement("img")
+					img.src = musicAct["artists"]["items"][0]["images"][0].url
+					container.appendChild(img)
+					// h1.innerText = musicAct.name
+
+				} );
+				xhr.send();
+        	})};
+
+
+		generatePics(piclist);
+
+        var searchArtist = function (artist, img) {
+			var xhr = new XMLHttpRequest();
+			var url = "https://api.spotify.com/v1/search?q=artist:"+artist+"&type=artist"
+			xhr.open("GET", url)
+				xhr.addEventListener( 'load', function ( e ) {
+
+					var musicAct = JSON.parse(xhr.responseText)
+					console.log(musicAct);
+					var container = document.querySelector('#container');
+					var img = document.createElement("img")
+
+					img.src = musicAct.artists.items[0].images[0].url
+					container.appendChild(img)
+
+
+				} );
+				xhr.send();
+        };
+
+        searchButton.addEventListener("click", function(){
+        	var img = document.querySelector("img")
+        	var artistName = input.value.replace(" ", "+");
+        	searchArtist(artistName, img);
+        	
+        })
+
+        var container = document.querySelector('#container');
+		var msnry = new Masonry( container, {
+  		// options...
+  		itemSelector: '.item',
+  		columnWidth: 200
+		});
+
+        
+				
+		
+
+
         </script>
     </body>
 </html>
